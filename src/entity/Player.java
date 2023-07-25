@@ -60,9 +60,6 @@ public class Player extends Entity {
                 direction = "right";
                 x += speed;
             }
-            else if(keyH.downPressed == false){
-                direction = "standby";
-            }
             spriteCounter++;
             if (spriteCounter > 12) {
                 if (spriteNumber == 1) {
