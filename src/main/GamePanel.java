@@ -1,4 +1,5 @@
 package main;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -7,8 +8,6 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 
 import entity.Player;
-
-
 
 public class GamePanel extends JPanel implements Runnable {
     // SCREEN SETTINGS
@@ -27,12 +26,14 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keyH = new KeyHandler(); // Keyboard Commands
     Thread gameThread;// Cloak
 
-    Player player = new Player(this,keyH);
+    Player player = new Player(this, keyH);
 
     // Set Player's default Position
-    /* int playerX = 100;
-    int playerY = 100;
-    int playerSpeed = 4; */
+    /*
+     * int playerX = 100;
+     * int playerY = 100;
+     * int playerSpeed = 4;
+     */
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -47,68 +48,70 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread = new Thread(this);
         gameThread.start();
     }
-//GAMELOOP "SLEEP"WAY #1
-/*     @Override
+
+    // GAMELOOP "SLEEP"WAY #1
+    /*
+     * @Override
+     * public void run() {
+     * while (gameThread != null) {
+     * // Setting FPS
+     * double drawInterval = 1000000000 / FPS; // 0.01666seconds
+     * double nextDrawTime = System.nanoTime() + drawInterval;
+     * // 1- UPDATE: update information such as character position
+     * update();
+     * // 2- DRAW: draw the screen with the updated information
+     * repaint();
+     * 
+     * try {
+     * double remainingTime = nextDrawTime - System.nanoTime();
+     * remainingTime = remainingTime / 1000000;
+     * if (remainingTime < 0) {
+     * remainingTime = 0;
+     * }
+     * Thread.sleep((long) remainingTime);
+     * 
+     * nextDrawTime += drawInterval;
+     * } catch (InterruptedException e) {
+     * e.printStackTrace();
+     * }
+     * }
+     * 
+     * }
+     */
+    // GAMELOOP "DELTA" #2
     public void run() {
-        while (gameThread != null) {
-            // Setting FPS
-            double drawInterval = 1000000000 / FPS; // 0.01666seconds
-            double nextDrawTime = System.nanoTime() + drawInterval;
-            // 1- UPDATE: update information such as character position
-            update();
-            // 2- DRAW: draw the screen with the updated information
-            repaint();
-
-            try {
-                double remainingTime = nextDrawTime - System.nanoTime();
-                remainingTime = remainingTime / 1000000;
-                if (remainingTime < 0) {
-                    remainingTime = 0;
-                }
-                Thread.sleep((long) remainingTime);
-
-                nextDrawTime += drawInterval;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-    } */
-    //GAMELOOP "DELTA" #2
-    public void run(){
-        double drawInterval = 1000000000/FPS;
+        double drawInterval = 1000000000 / FPS;
         double delta = 0;
         long lastTime = System.nanoTime();
         long currentTime;
         long timer = 0;
         int drawCount = 0;
-        
-        while(gameThread != null){
-        
+
+        while (gameThread != null) {
+
             currentTime = System.nanoTime();
-        
+
             delta += (currentTime - lastTime) / drawInterval;
             timer += (currentTime - lastTime);
             lastTime = currentTime;
 
-            if(delta >= 1){
+            if (delta >= 1) {
                 update();
                 repaint();
                 delta--;
                 drawCount++;
             }
-            if(timer >= 1000000000){
+            if (timer >= 1000000000) {
                 System.out.println("FPS: " + drawCount);
-                drawCount =0;
+                drawCount = 0;
                 timer = 0;
             }
 
         }
     }
 
-
     public void update() {
-       player.update();
+        player.update();
     }
 
     public void paintComponent(Graphics g) {
